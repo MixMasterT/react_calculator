@@ -12,5 +12,6 @@ class Screen extends Component {
       </div>
     )
   }
-
 }
+
+export default Screen;
