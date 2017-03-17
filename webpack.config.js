@@ -8,7 +8,7 @@ module.exports = {
   module: {
     loaders: [
       {
-        test: [/\.js$/, /\.jsx$/]
+        test: [/\.js$/, /\.jsx$/],
         exclude: /(node_modules)/,
         loader: 'babel-loader',
         query: {
@@ -21,5 +21,8 @@ module.exports = {
       }
     ]
   },
-  devtool: 'source-map'
-}
+  devtool: 'source-map',
+  resolve: {
+    extensions: [".js", ".jsx"]
+  }
+};
