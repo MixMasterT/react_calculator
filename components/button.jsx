@@ -8,10 +8,5 @@ export const Button = ({text, handleClick}) => {
     <div className='calc-button' onClick={curriedHandler}>{text}</div>
   );
 }
-//
-// export const FuncButton = ({text, func, string, funcHandler}) => {
-//   return (
-//     <div className='calc-button' >{text}</div>
-//   );
-// }
+
 export default Button;

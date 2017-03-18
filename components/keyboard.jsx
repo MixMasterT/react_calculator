@@ -14,21 +14,28 @@ class Keyboard extends Component {
           <Button text="7" handleClick={clickHandler} />
           <Button text="8" handleClick={clickHandler} />
           <Button text="9" handleClick={clickHandler} />
+          <Button text="+" handleClick={clickHandler} />
         </div>
         <div className='row'>
           <Button text="4" handleClick={clickHandler} />
           <Button text="5" handleClick={clickHandler} />
           <Button text="6" handleClick={clickHandler} />
+          <Button text="-" handleClick={clickHandler} />
         </div>
         <div className='row'>
           <Button text="1" handleClick={clickHandler} />
           <Button text="2" handleClick={clickHandler} />
           <Button text="3" handleClick={clickHandler} />
+          <Button text="*" handleClick={clickHandler} />
         </div>
         <div className='row'>
           <Button text="=" handleClick={clickHandler}/>
           <Button text="0" handleClick={clickHandler}/>
           <Button text="." handleClick={clickHandler}/>
+          <Button text="/" handleClick={clickHandler}/>
+        </div>
+        <div className='row'>
+          <Button text="AC" handleClick={clickHandler} />
         </div>
       </div>
     )

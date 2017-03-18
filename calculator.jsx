@@ -4,41 +4,51 @@ import Screen from './components/screen';
 
 import styles from './app.scss';
 
+import RpnCalculator from './rpn/rpn_calculator';
+
 class Calculator extends Component {
   constructor(props) {
     super(props);
     this.state = {
-                   string: " "
+                   showString: " ",
+                   baseString: "",
+                   temp: ""
                  }
 
-    this.numClickHandler = this.numClickHandler.bind(this);
-    // this.funcClickHandler = this.funcClickHandler.bind(this);
+    this.clickHandler = this.clickHandler.bind(this);
     this.calculator = new RpnCalculator();
   }
 
   clickHandler(sym) {
     if (sym === 'AC') {
       this.calculator.eval();
-      this.setState({ string: ' ' });
+      this.setState({ showString: " ", baseString: "", temp: "" });
+
     } else if (sym === '=') {
-      this.setState({ string: this.calculator.eval()});
-      this.calculator.insert(this.state.string)
+      this.calculator.insert(this.state.temp);
+      const total = this.calculator.eval().toString()
+      this.setState({ showString: total, baseString: total, temp: "" });
+      this.calculator.insert(total)
+
     } else {
-      this.calculator.insert(sym);
-      this.setState({ string: this.state.string + num })
+      if (this.calculator.operators.indexOf(sym) > -1) {
+        if (this.state.temp !== "") {
+          this.calculator.insert(this.state.temp);
+        }
+        this.calculator.insert(sym);
+        const newStr = this.state.baseString + ` ${this.state.temp} ${sym} `;
+        this.setState({ showString: newStr, baseString: newStr, temp: "" })
+      } else {
+        this.setState({ temp: this.state.temp + sym,
+                        showString: this.state.showString + sym });
+      }
     }
   }
 
-  // funcClickHandler(func) {
-  //   const
-  //   // return func => {
-  //   //   // gotta figure this one out... const result =
-  //   // }
-  // }
   render() {
     return (
       <div className='calculator'>
-        <Screen string={this.state.string} />
+        <Screen string={this.state.showString} />
         <Keyboard
           clickHandler={this.clickHandler}
         />
