@@ -9500,22 +9500,41 @@ var Calculator = function (_Component) {
     key: 'clickHandler',
     value: function clickHandler(sym) {
       if (sym === 'AC') {
+        // reset calculator and string
         this.calculator.eval();
         this.setState({ showString: " ", baseString: "", temp: "" });
+      } else if (sym === 'C') {
+        this.setState({ temp: "", showString: this.state.baseString });
       } else if (sym === '=') {
-        this.calculator.insert(this.state.temp);
+        // evaluate calculator and update strings
+        var value = this.state.temp === "" ? '0' : this.state.temp;
+        this.calculator.insert(value);
         var total = this.calculator.eval().toString();
         this.setState({ showString: total, baseString: total, temp: "" });
         this.calculator.insert(total);
       } else {
-        if (this.calculator.operators.indexOf(sym) > -1) {
+        var binOps = Object.keys(this.calculator.binaryOps);
+        var unOps = Object.keys(this.calculator.unaryOps);
+
+        if (binOps.indexOf(sym) > -1) {
+          // handle operator input
+
+          // first add temp value into calculator if it has value
           if (this.state.temp !== "") {
             this.calculator.insert(this.state.temp);
           }
+
           this.calculator.insert(sym);
           var newStr = this.state.baseString + (' ' + this.state.temp + ' ' + sym + ' ');
           this.setState({ showString: newStr, baseString: newStr, temp: "" });
+        } else if (unOps.indexOf(sym) > -1) {
+          this.calculator.insert(sym);
+
+          // get the result, but also leave it in the stack for subsequent calculations
+          var result = this.calculator.valStack[0];
+          this.setState({ temp: "", showString: result, baseString: result });
         } else {
+          // handle number input
           this.setState({ temp: this.state.temp + sym,
             showString: this.state.showString + sym });
         }
@@ -11612,7 +11631,14 @@ var _react = __webpack_require__(20);
 
 var _react2 = _interopRequireDefault(_react);
 
+var _rpn_calculator = __webpack_require__(90);
+
+var _rpn_calculator2 = _interopRequireDefault(_rpn_calculator);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var c = new _rpn_calculator2.default();
+var operators = Object.keys(c.binaryOps) + Object.keys(c.unaryOps) + ['AC', 'C', '='];
 
 var Button = exports.Button = function Button(_ref) {
   var text = _ref.text,
@@ -11621,9 +11647,12 @@ var Button = exports.Button = function Button(_ref) {
   var curriedHandler = function curriedHandler(e) {
     return handleClick(text);
   };
+  var btnClass = operators.indexOf(text) > -1 ? 'op' : 'num-button';
   return _react2.default.createElement(
     'div',
-    { className: 'calc-button', onClick: curriedHandler },
+    {
+      className: btnClass,
+      onClick: curriedHandler },
     text
   );
 };
@@ -11678,6 +11707,14 @@ var Keyboard = function (_Component) {
         _react2.default.createElement(
           'div',
           { className: 'row' },
+          _react2.default.createElement(_button2.default, { text: 'AC', handleClick: clickHandler }),
+          _react2.default.createElement(_button2.default, { text: 'C', handleClick: clickHandler }),
+          _react2.default.createElement(_button2.default, { text: '\xB1', handleClick: clickHandler }),
+          _react2.default.createElement(_button2.default, { text: '%', handleClick: clickHandler })
+        ),
+        _react2.default.createElement(
+          'div',
+          { className: 'row' },
           _react2.default.createElement(_button2.default, { text: '7', handleClick: clickHandler }),
           _react2.default.createElement(_button2.default, { text: '8', handleClick: clickHandler }),
           _react2.default.createElement(_button2.default, { text: '9', handleClick: clickHandler }),
@@ -11702,15 +11739,10 @@ var Keyboard = function (_Component) {
         _react2.default.createElement(
           'div',
           { className: 'row' },
-          _react2.default.createElement(_button2.default, { text: '=', handleClick: clickHandler }),
-          _react2.default.createElement(_button2.default, { text: '0', handleClick: clickHandler }),
           _react2.default.createElement(_button2.default, { text: '.', handleClick: clickHandler }),
+          _react2.default.createElement(_button2.default, { text: '0', handleClick: clickHandler }),
+          _react2.default.createElement(_button2.default, { text: '=', handleClick: clickHandler }),
           _react2.default.createElement(_button2.default, { text: '/', handleClick: clickHandler })
-        ),
-        _react2.default.createElement(
-          'div',
-          { className: 'row' },
-          _react2.default.createElement(_button2.default, { text: 'AC', handleClick: clickHandler })
         )
       );
     }
@@ -11794,8 +11826,8 @@ var RpnCalculator = function () {
   function RpnCalculator() {
     _classCallCheck(this, RpnCalculator);
 
-    this.operators = ['+', '-', '*', '/'];
-    this.ops = {
+    // this.operators = ['+', '-', '*', '/', '%', '±'];
+    this.binaryOps = {
       '+': function _(v1, v2) {
         return v1 + v2;
       },
@@ -11809,6 +11841,14 @@ var RpnCalculator = function () {
         return v1 / v2;
       }
     };
+    this.unaryOps = {
+      '%': function _(v) {
+        return v * 100;
+      },
+      '±': function _(v) {
+        return v * -1;
+      }
+    };
     this.opStack = [];
     this.valStack = [];
   }
@@ -11816,9 +11856,13 @@ var RpnCalculator = function () {
   _createClass(RpnCalculator, [{
     key: 'insert',
     value: function insert(str) {
-      if (this.operators.indexOf(str) > -1) {
-        var lowOrds = ['+', '-'];
-        while (lowOrds.indexOf(str) > -1 && this.opStack.length > 0 && lowOrds.indexOf(this.opStack[this.opStack.length - 1]) == -1) {
+      var unOps = Object.keys(this.unaryOps);
+      var binOps = Object.keys(this.binaryOps);
+      if (unOps.indexOf(str) > -1) {
+        var value = this.eval();
+        this.valStack.push(this.unaryOps[str](value));
+      } else if (binOps.indexOf(str) > -1) {
+        while (binOps.indexOf(str) < 2 && this.opStack.length > 0 && binOps.indexOf(this.opStack[this.opStack.length - 1]) > 1) {
           this.valStack.push(this.evalStep(this.opStack.pop()));
         }
         this.opStack.push(str);
@@ -11840,22 +11884,12 @@ var RpnCalculator = function () {
       var val1 = this.valStack.pop();
       var val2 = this.valStack.pop();
 
-      return this.ops[str].apply(this, [val2, val1]);
+      return this.binaryOps[str].apply(this, [val2, val1]);
     }
   }]);
 
   return RpnCalculator;
 }();
-
-// r = new RpnCalculator();
-// const test = ['3', '/', '4', '+', '2', '*', '5'];
-// test.forEach((t) => {
-//   r.insert(t);
-// })
-// console.log(r.opStack);
-// console.log(r.valStack);
-// console.log((test.concat(' = ')).join(' '), r.eval());
-
 
 exports.default = RpnCalculator;
 
@@ -11868,7 +11902,7 @@ exports = module.exports = __webpack_require__(92)(undefined);
 
 
 // module
-exports.push([module.i, "/* RESETS */\nhtml, body, div, p {\n  border: none;\n  background-color: none;\n  margin: 0;\n  padding: 0;\n  font-family: inherit;\n  color: inherit; }\n\nbody {\n  width: 100vw;\n  background-color: #EDEDED; }\n\n.calculator {\n  width: 50%;\n  margin: 0 auto;\n  min-width: 10em; }\n\n/* Screen */\n.calc-screen {\n  background-color: #000;\n  color: #89ef4a;\n  font-size: 1.3em;\n  width: 100%;\n  min-height: 3em;\n  margin-top: 1em;\n  text-align: right;\n  padding: 1em;\n  box-sizing: border-box; }\n\n/* Keyboard */\n.calc-keyboard {\n  display: flex;\n  flex-direction: column; }\n  .calc-keyboard .row {\n    display: flex;\n    flex-direction: row;\n    justify-content: center; }\n\n/* Buttons */\n.calc-button {\n  border: 1px solid black;\n  padding: 2em;\n  margin: 0.2em;\n  width: 3em;\n  font-size: 1.2em;\n  text-align: center; }\n\n.calc-button:hover {\n  transform: scale(1.04);\n  box-shadow: 1px 1px; }\n\n.calc-button:active {\n  transform: scale(1.02); }\n", ""]);
+exports.push([module.i, "/* RESETS */\nhtml, body, div, p {\n  border: none;\n  background-color: none;\n  margin: 0;\n  padding: 0;\n  font-family: inherit;\n  color: inherit; }\n\nbody {\n  width: 100vw;\n  background: radial-gradient(ellipse, white 20%, #333333 95%); }\n\n.calculator {\n  width: 50%;\n  min-width: 370px;\n  margin: 0 auto;\n  border: 1px solid black;\n  padding: 2em;\n  background: linear-gradient(to bottom right, #cdf4f1 20%, #97a8d8 80%); }\n\n/* Screen */\n.calc-screen {\n  background-color: #000;\n  color: #89ef4a;\n  font-size: 1.3em;\n  width: 100%;\n  min-height: 4em;\n  margin-top: 1em;\n  text-align: right;\n  padding: 1em;\n  box-sizing: border-box; }\n\n/* Keyboard */\n.calc-keyboard {\n  display: flex;\n  flex-direction: column; }\n  .calc-keyboard .row {\n    display: flex;\n    flex-direction: row;\n    justify-content: center;\n    min-width: 330px; }\n    .calc-keyboard .row .num-button, .calc-keyboard .row .op {\n      background-color: #bdc4db;\n      border: 1px solid black;\n      margin: 0.2em;\n      width: 5em;\n      height: 5em;\n      font-size: 1.2em;\n      padding-top: 10%;\n      text-align: center;\n      box-sizing: border-box; }\n    .calc-keyboard .row .op {\n      background-color: #90d5cf; }\n    .calc-keyboard .row .num-button:hover, .calc-keyboard .row .op:hover {\n      transform: scale(1.04);\n      box-shadow: 1px 1px; }\n    .calc-keyboard .row .num-button:active, .calc-keyboard .row .op:active {\n      transform: scale(1.02); }\n", ""]);
 
 // exports
 

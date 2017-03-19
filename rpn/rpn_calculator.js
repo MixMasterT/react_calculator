@@ -1,22 +1,30 @@
 class RpnCalculator {
   constructor() {
-    this.operators = ['+','-','*','/'];
-    this.ops = {
-      '+': (v1, v2) => v1 + v2,
-      '-': (v1, v2) => v1 - v2,
-      '*': (v1, v2) => v1 * v2,
-      '/': (v1, v2) => v1 / v2,
+    // this.operators = ['+', '-', '*', '/', '%', '±'];
+    this.binaryOps = {
+        '+': (v1, v2) => v1 + v2,
+        '-': (v1, v2) => v1 - v2,
+        '*': (v1, v2) => v1 * v2,
+        '/': (v1, v2) => v1 / v2
+    };
+    this.unaryOps = {
+      '%': (v) => v * 100,
+      '±': (v) => v * -1
     }
     this.opStack = [];
     this.valStack = [];
   }
 
   insert(str) {
-    if (this.operators.indexOf(str) > -1) {
-      const lowOrds = ['+', '-'];
-      while (lowOrds.indexOf(str) > -1 &&
+    const unOps = Object.keys(this.unaryOps);
+    const binOps = Object.keys(this.binaryOps);
+    if (unOps.indexOf(str) > -1) {
+      const value = this.eval();
+      this.valStack.push(this.unaryOps[str](value));
+    } else if (binOps.indexOf(str) > -1) {
+      while (binOps.indexOf(str) < 2 &&
             this.opStack.length > 0 &&
-          lowOrds.indexOf(this.opStack[this.opStack.length - 1]) == -1) {
+          binOps.indexOf(this.opStack[this.opStack.length - 1]) > 1) {
         this.valStack.push(this.evalStep(this.opStack.pop()));
       }
       this.opStack.push(str);
@@ -37,17 +45,9 @@ class RpnCalculator {
     const val1 = this.valStack.pop();
     const val2 = this.valStack.pop();
 
-    return this.ops[str].apply(this, [val2, val1]);
+    return this.binaryOps[str].apply(this, [val2, val1]);
   }
 
 }
 
-// r = new RpnCalculator();
-// const test = ['3', '/', '4', '+', '2', '*', '5'];
-// test.forEach((t) => {
-//   r.insert(t);
-// })
-// console.log(r.opStack);
-// console.log(r.valStack);
-// console.log((test.concat(' = ')).join(' '), r.eval());
 export default RpnCalculator;

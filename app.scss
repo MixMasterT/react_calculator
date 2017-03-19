@@ -9,13 +9,16 @@ html, body, div, p {
 }
 body {
   width: 100vw;
-  background-color: #EDEDED;
+  background: radial-gradient(ellipse, hsla(0,0,100,1) 20%, hsla(0,0,20,1) 95%);
 }
 
 .calculator {
   width: 50%;
+  min-width: 370px;
   margin: 0 auto;
-  min-width: 10em;
+  border: 1px solid black;
+  padding: 2em;
+  background: linear-gradient(to bottom right, hsla(175,65,88,1) 20%, hsla(225, 45, 72,1) 80%);
 }
 
 /* Screen */
@@ -24,7 +27,7 @@ body {
   color: #89ef4a;
   font-size: 1.3em;
   width: 100%;
-  min-height: 3em;
+  min-height: 4em;
   margin-top: 1em;
   text-align: right;
   padding: 1em;
@@ -39,21 +42,27 @@ body {
     display: flex;
     flex-direction: row;
     justify-content: center;
+    min-width: 330px;
+    .num-button, .op {
+      background-color: hsla(225, 30, 80,1);
+      border: 1px solid black;
+      margin: 0.2em;
+      width: 5em;
+      height: 5em;
+      font-size: 1.2em;
+      padding-top: 10%;
+      text-align: center;
+      box-sizing: border-box;
+    }
+    .op {
+      background-color: hsla(175, 45, 70, 1);
+    }
+    .num-button:hover, .op:hover {
+      transform: scale(1.04);
+      box-shadow: 1px 1px;
+    }
+    .num-button:active, .op:active {
+      transform: scale(1.02);
+    }
   }
-}
-/* Buttons */
-.calc-button {
-  border: 1px solid black;
-  padding: 2em;
-  margin: 0.2em;
-  width: 3em;
-  font-size: 1.2em;
-  text-align: center;
-}
-.calc-button:hover {
-  transform: scale(1.04);
-  box-shadow: 1px 1px;
-}
-.calc-button:active {
-  transform: scale(1.02);
 }

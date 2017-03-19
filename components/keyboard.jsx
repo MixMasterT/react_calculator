@@ -11,6 +11,12 @@ class Keyboard extends Component {
     return (
       <div className='calc-keyboard'>
         <div className='row'>
+          <Button text="AC" handleClick={clickHandler} />
+          <Button text="C" handleClick={clickHandler} />
+          <Button text="±" handleClick={clickHandler} />
+          <Button text="%" handleClick={clickHandler} />
+        </div>
+        <div className='row'>
           <Button text="7" handleClick={clickHandler} />
           <Button text="8" handleClick={clickHandler} />
           <Button text="9" handleClick={clickHandler} />
@@ -29,13 +35,10 @@ class Keyboard extends Component {
           <Button text="*" handleClick={clickHandler} />
         </div>
         <div className='row'>
-          <Button text="=" handleClick={clickHandler}/>
-          <Button text="0" handleClick={clickHandler}/>
           <Button text="." handleClick={clickHandler}/>
+          <Button text="0" handleClick={clickHandler}/>
+          <Button text="=" handleClick={clickHandler}/>
           <Button text="/" handleClick={clickHandler}/>
-        </div>
-        <div className='row'>
-          <Button text="AC" handleClick={clickHandler} />
         </div>
       </div>
     )
