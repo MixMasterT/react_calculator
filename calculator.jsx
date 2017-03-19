@@ -38,24 +38,27 @@ class Calculator extends Component {
       const binOps = Object.keys(this.calculator.binaryOps);
       const unOps = Object.keys(this.calculator.unaryOps);
 
-      if (binOps.indexOf(sym) > -1) { // handle binary operator input
+      if (binOps.indexOf(sym) > -1 || unOps.indexOf(sym)> -1) {
+        // handle operator input
 
         // first add temp value into calculator if it has value
         if (this.state.temp !== "") {
           this.calculator.insert(this.state.temp);
         }
 
-        this.calculator.insert(sym);
-        const newStr = this.state.baseString + ` ${this.state.temp} ${sym} `;
-        this.setState({ showString: newStr, baseString: newStr, temp: "" })
+        if (binOps.indexOf(sym) > -1) {
+          this.calculator.insert(sym);
+          const newStr = this.state.baseString + ` ${this.state.temp} ${sym} `;
+          this.setState({ showString: newStr, baseString: newStr, temp: "" })
 
-      } else if (unOps.indexOf(sym) > -1) { //handle unary operator
-        this.calculator.insert(sym);
+        } else { //handle unary operatory
+          this.calculator.insert(sym);
 
-        // get the result, but also leave it in the stack for subsequent calculations
-        const result = this.calculator.valStack[0];
-        this.setState({ temp: "", showString: result, baseString: result });
+          // get the result, but also leave it in the stack for subsequent calculations
+          const result = this.calculator.valStack[0];
+          this.setState({ temp: "", showString: result, baseString: result });
 
+        }
       } else { // handle number input
         this.setState({ temp: this.state.temp + sym,
                         showString: this.state.showString + sym });
