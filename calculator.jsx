@@ -20,28 +20,25 @@ class Calculator extends Component {
   }
 
   clickHandler(sym) {
-    if (sym === 'AC') {
-      // reset calculator and string
+    if (sym === 'AC') { // reset calculator and string
       this.calculator.eval();
       this.setState({ showString: " ", baseString: "", temp: "" });
 
-    } else if (sym === 'C') {
+    } else if (sym === 'C') { // just get rid of temp
       this.setState({ temp: "" , showString: this.state.baseString })
 
-    } else if (sym === '=') {
-      // evaluate calculator and update strings
+    } else if (sym === '=') { // evaluate calculator and update strings
       const value = this.state.temp === "" ? '0' : this.state.temp;
       this.calculator.insert(value);
       const total = this.calculator.eval().toString()
       this.setState({ showString: total, baseString: total, temp: "" });
       this.calculator.insert(total);
 
-    } else {
+    } else { // it's either an operator or a number
       const binOps = Object.keys(this.calculator.binaryOps);
       const unOps = Object.keys(this.calculator.unaryOps);
 
-      if (binOps.indexOf(sym) > -1) {
-        // handle operator input
+      if (binOps.indexOf(sym) > -1) { // handle binary operator input
 
         // first add temp value into calculator if it has value
         if (this.state.temp !== "") {
@@ -52,14 +49,14 @@ class Calculator extends Component {
         const newStr = this.state.baseString + ` ${this.state.temp} ${sym} `;
         this.setState({ showString: newStr, baseString: newStr, temp: "" })
 
-      } else if (unOps.indexOf(sym) > -1) {
+      } else if (unOps.indexOf(sym) > -1) { //handle unary operator
         this.calculator.insert(sym);
 
         // get the result, but also leave it in the stack for subsequent calculations
         const result = this.calculator.valStack[0];
         this.setState({ temp: "", showString: result, baseString: result });
-      } else {
-        // handle number input
+
+      } else { // handle number input
         this.setState({ temp: this.state.temp + sym,
                         showString: this.state.showString + sym });
       }

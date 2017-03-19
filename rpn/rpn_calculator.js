@@ -1,6 +1,5 @@
 class RpnCalculator {
   constructor() {
-    // this.operators = ['+', '-', '*', '/', '%', '±'];
     this.binaryOps = {
         '+': (v1, v2) => v1 + v2,
         '-': (v1, v2) => v1 - v2,
