@@ -43,13 +43,14 @@ body {
     flex-direction: row;
     justify-content: center;
     min-width: 330px;
-    .num-button, .op {
+    .num-button, .op, .calc-op {
       background-color: hsla(225, 30, 80,1);
       border: 1px solid black;
       margin: 0.2em;
       width: 5em;
       height: 5em;
       font-size: 1.2em;
+      font-weight: bolder;
       padding-top: 10%;
       text-align: center;
       box-sizing: border-box;
@@ -57,11 +58,14 @@ body {
     .op {
       background-color: hsla(175, 45, 70, 1);
     }
-    .num-button:hover, .op:hover {
+    .calc-op {
+      background-color: hsla(60, 45, 65, 1);
+    }
+    .num-button:hover, .op:hover, .calc-op:hover {
       transform: scale(1.04);
       box-shadow: 1px 1px;
     }
-    .num-button:active, .op:active {
+    .num-button:active, .op:active, .calc-op:active {
       transform: scale(1.02);
     }
   }

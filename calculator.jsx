@@ -46,12 +46,12 @@ class Calculator extends Component {
           this.calculator.insert(this.state.temp);
         }
 
-        if (binOps.indexOf(sym) > -1) {
+        if (binOps.indexOf(sym) > -1) { //handle binary operator
           this.calculator.insert(sym);
           const newStr = this.state.baseString + ` ${this.state.temp} ${sym} `;
           this.setState({ showString: newStr, baseString: newStr, temp: "" })
 
-        } else { //handle unary operatory
+        } else { //handle unary operator
           this.calculator.insert(sym);
 
           // get the result, but also leave it in the stack for subsequent calculations
