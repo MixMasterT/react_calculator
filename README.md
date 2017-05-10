@@ -11,7 +11,7 @@ with minimal effort.
 ## Future Developments
 
 Currently unary operators pop everything off of both stacks, and then
-executes. This means running a unary operator is equivalent to hitting the
+execute. This means running a unary operator is equivalent to hitting the
 equals sign, and then running it. In the future, I plan to factor that
 out to allow unary operators to be used inline on a single argument.
 
