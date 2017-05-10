@@ -1,6 +1,6 @@
 # React Calculator
 
-![example calculation(images/example_calculation.gif)
+![example calculation](images/example_calculation.gif)
 
 ## RPN Type Calculation
 
